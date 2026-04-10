@@ -1,6 +1,7 @@
-# Extreme Gradient Boosting (XGBoost) Machine Learning (ML) Model
-Data pipeline and XGBoost ML model for predicting missing cofactors in protein structures predicted by structure-prediction models. Includes scripts for feature engineering, model construction, and hyperparameter optimisation as part of my MChem dissertation.
+# XGBoost Model for Identifying and Predicting Missing Cofactors in Predicted Protein Structures
+A comprehensive pipeline developed for my MChem dissertation, which faetures the scripts for training data generation and analysis. This repository also includes scripts for feature engineering, XGBoost model construct and hyperparameter optimisation. 
 
-**Authors:** Angus Chan
+**Author:** Angus Chan
 
 **Affiliations:** Manchester Institute of Biotechnology & Department of Chemistry at The University of Manchester
+
