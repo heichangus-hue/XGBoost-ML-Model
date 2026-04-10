@@ -1,0 +1,206 @@
+# CIF-to-PDB conversion via gemmi (Python)
+# Usage: Rscript frustration_analysis_for_af3_structures.R
+
+cat("=== Start frustration_analysis.R ===\n")
+cat("Time:", format(Sys.time()), "\n")
+
+# ---- 1. Configuration: Potential Batch Directories ----
+search_dirs <- c(
+    "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/scratch/alphafold_job/output_batch_dir_2/1st_batch_all", # Change it to your directory. Modify as needed.
+    "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/2nd_batch_all",
+    "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/proteins_without_cofactors",
+    "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/proteins_without_cofactors_2",
+    "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/HEME_third_batch",
+    "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/FAD_third_batch",
+    "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/Zn_third_batch_all",
+    "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/Cu_1_third_batch_all"
+)
+
+# ---- 2. Determine PdbID ----
+args <- commandArgs(trailingOnly = TRUE)
+
+if (length(args) >= 1) {
+    PdbID <- args[1]
+    cat("Manual Mode: Processing", PdbID, "\n")
+} else if (Sys.getenv("SLURM_ARRAY_TASK_ID") != "") {
+    idx <- as.integer(Sys.getenv("SLURM_ARRAY_TASK_ID"))
+
+    all_folders <- unique(unlist(lapply(search_dirs, function(d) {
+        if (dir.exists(d)) list.dirs(d, full.names = FALSE, recursive = FALSE)
+    })))
+    all_folders <- sort(all_folders)
+
+    if (idx > length(all_folders)) {
+        stop(paste("Task ID", idx, "out of bounds. Total unique folders:", length(all_folders)))
+    }
+
+    PdbID <- all_folders[idx]
+    cat("SLURM Array Mode: Task", idx, "is processing", PdbID, "\n")
+} else {
+    stop("No PdbID provided and SLURM_ARRAY_TASK_ID is not set.")
+}
+
+# ---- 3. Environment Setup ----
+library(reticulate)
+PYTHON_BINARY_PATH <- "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/.conda/envs/frustraR_env/bin/python"
+reticulate::use_python(PYTHON_BINARY_PATH, required = TRUE)
+
+if (!suppressPackageStartupMessages(library(frustratometeR, logical.return = TRUE))) {
+    stop("FATAL: 'frustratometeR' package not found.")
+}
+
+# ---- 4. Locate CIF File ----
+sub_path <- file.path(PdbID, "seed-1_sample-0", "model.cif")
+CifFile <- NULL
+
+for (d in search_dirs) {
+    temp_path <- file.path(d, sub_path)
+    if (file.exists(temp_path)) {
+        CifFile <- temp_path
+        cat("Found CIF at:", CifFile, "\n")
+        break
+    }
+}
+
+if (is.null(CifFile)) {
+    stop(paste("FATAL: model.cif not found for", PdbID))
+}
+
+# ---- 5. Create Results Directory ----
+ResultsDir <- file.path(getwd(), "results_frustra", PdbID)
+if (!dir.exists(ResultsDir)) dir.create(ResultsDir, recursive = TRUE)
+
+PdbPath <- file.path(ResultsDir, paste0(PdbID, ".pdb"))
+
+# ---- 6. Convert CIF to PDB using gemmi (Python) ----
+cat("Converting CIF to PDB via gemmi...\n")
+
+py_run_string(paste0("
+import gemmi
+import sys
+
+cif_path = '", CifFile, "'
+pdb_path = '", PdbPath, "'
+
+try:
+    doc = gemmi.cif.read(cif_path)
+    structure = gemmi.make_structure_from_block(doc.sole_block())
+    structure.remove_hydrogens()
+    structure.write_pdb(pdb_path)
+    print('GEMMI_OK')
+except Exception as e:
+    print('GEMMI_ERROR: ' + str(e))
+    sys.exit(1)
+"))
+
+if (!file.exists(PdbPath) || file.size(PdbPath) == 0) {
+    stop("FATAL: gemmi did not produce a valid PDB file.")
+}
+cat("CIF successfully converted to PDB via gemmi.\n")
+
+# ---- 7. Detect chains from the gemmi-written PDB ----
+pdb_lines  <- readLines(PdbPath)
+atom_lines <- pdb_lines[grepl("^ATOM|^HETATM", pdb_lines)]
+
+if (length(atom_lines) == 0) {
+    stop("FATAL: Written PDB contains no ATOM/HETATM records.")
+}
+
+chain_ids <- unique(trimws(substr(atom_lines, 22, 22)))
+chain_ids <- chain_ids[nchar(chain_ids) > 0]
+cat("Chains found in gemmi PDB:", paste(chain_ids, collapse = ", "), "\n")
+
+ChainToUse <- if (length(chain_ids) > 0) chain_ids[1] else "A"
+cat("Using Chain:", ChainToUse, "\n")
+
+# ---- 8. Run Frustration Calculation ----
+cat("Starting frustration calculation (configurational)...\n")
+res <- tryCatch({
+    calculate_frustration(
+        PdbFile    = PdbPath,
+        Chain      = ChainToUse,
+        Mode       = "configurational",
+        ResultsDir = ResultsDir,
+        Graphic    = FALSE
+    )
+}, error = function(e) {
+    cat("\nERROR: Calculation failed for", PdbID, "\n")
+    cat("Error message:", conditionMessage(e), "\n")
+
+    remaining <- chain_ids[chain_ids != ChainToUse]
+    if (length(remaining) > 0) {
+        cat("Retrying with Chain:", remaining[1], "\n")
+        tryCatch({
+            calculate_frustration(
+                PdbFile    = PdbPath,
+                Chain      = remaining[1],
+                Mode       = "configurational",
+                ResultsDir = ResultsDir,
+                Graphic    = FALSE
+            )
+        }, error = function(e2) {
+            stop(paste("Retry also failed:", conditionMessage(e2)))
+        })
+    } else {
+        stop(paste("No further chains to try. Last error:", conditionMessage(e)))
+    }
+})
+
+# ---- 9. Export FrustrationData files as CSVs ----
+# frustratometeR writes results into:
+#   ResultsDir/<PdbBasename>.done/FrustrationData/
+# Files of interest:
+#   *.pdb_configurational       -> per-residue frustration
+#   *.pdb_configurational_5adens -> 5Å density frustration
+
+cat("\nExporting frustration data to CSV...\n")
+
+pdb_basename  <- paste0(PdbID, "_", ChainToUse)  # e.g. 132l_A
+frustration_data_dir <- file.path(ResultsDir, paste0(pdb_basename, ".done"), "FrustrationData")
+
+if (!dir.exists(frustration_data_dir)) {
+    cat("WARNING: FrustrationData directory not found at:", frustration_data_dir, "\n")
+    cat("Contents of ResultsDir:\n")
+    print(list.files(ResultsDir, recursive = TRUE))
+} else {
+    # -- Per-residue configurational frustration --
+    residue_file <- file.path(frustration_data_dir, paste0(pdb_basename, ".pdb_configurational"))
+    if (file.exists(residue_file)) {
+        residue_df <- tryCatch({
+            read.table(residue_file, header = TRUE, sep = "", stringsAsFactors = FALSE)
+        }, error = function(e) {
+            cat("WARNING: Could not parse residue frustration file:", conditionMessage(e), "\n")
+            NULL
+        })
+        if (!is.null(residue_df)) {
+            residue_df$PdbID <- PdbID
+            residue_csv <- file.path(ResultsDir, paste0(PdbID, "_configurational.csv"))
+            write.csv(residue_df, file = residue_csv, row.names = FALSE)
+            cat("Per-residue CSV written to:", residue_csv, "\n")
+        }
+    } else {
+        cat("WARNING: Per-residue frustration file not found:", residue_file, "\n")
+    }
+
+    # -- 5Å density frustration --
+    dens_file <- file.path(frustration_data_dir, paste0(pdb_basename, ".pdb_configurational_5adens"))
+    if (file.exists(dens_file)) {
+        dens_df <- tryCatch({
+            read.table(dens_file, header = TRUE, sep = "", stringsAsFactors = FALSE)
+        }, error = function(e) {
+            cat("WARNING: Could not parse 5adens frustration file:", conditionMessage(e), "\n")
+            NULL
+        })
+        if (!is.null(dens_df)) {
+            dens_df$PdbID <- PdbID
+            dens_csv <- file.path(ResultsDir, paste0(PdbID, "_configurational_5adens.csv"))
+            write.csv(dens_df, file = dens_csv, row.names = FALSE)
+            cat("5Å density CSV written to:", dens_csv, "\n")
+        }
+    } else {
+        cat("WARNING: 5adens frustration file not found:", dens_file, "\n")
+    }
+}
+
+cat("\nSUCCESS: Results saved to", ResultsDir, "\n")
+cat("=== End frustration_analysis.R ===\n")
