@@ -1,0 +1,19 @@
+name: colabalign
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+# Python and related packages
+  - python=3.12
+  - numpy
+  - pandas
+  - biopython
+  - bs4
+  - tqdm
+# Bioinformatics tools
+  - treecluster
+  - usalign
+  - mustang
+  - mview
+  - beem-bio
