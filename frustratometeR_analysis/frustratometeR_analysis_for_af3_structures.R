@@ -4,7 +4,7 @@
 cat("=== Start frustration_analysis.R ===\n")
 cat("Time:", format(Sys.time()), "\n")
 
-# ---- 1. Configuration: Potential Batch Directories ----
+
 search_dirs <- c(
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/scratch/alphafold_job/output_batch_dir_2/1st_batch_all", # Change it to your directory. Modify as needed.
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/2nd_batch_all",
@@ -16,7 +16,7 @@ search_dirs <- c(
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/Cu_1_third_batch_all"
 )
 
-# ---- 2. Determine PdbID ----
+# Determine PDB ID
 args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) >= 1) {
@@ -40,7 +40,7 @@ if (length(args) >= 1) {
     stop("No PdbID provided and SLURM_ARRAY_TASK_ID is not set.")
 }
 
-# ---- 3. Environment Setup ----
+# Environment Setup
 library(reticulate)
 PYTHON_BINARY_PATH <- "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/.conda/envs/frustraR_env/bin/python"
 reticulate::use_python(PYTHON_BINARY_PATH, required = TRUE)
@@ -49,7 +49,7 @@ if (!suppressPackageStartupMessages(library(frustratometeR, logical.return = TRU
     stop("FATAL: 'frustratometeR' package not found.")
 }
 
-# ---- 4. Locate CIF File ----
+# Locate CIF File
 sub_path <- file.path(PdbID, "seed-1_sample-0", "model.cif")
 CifFile <- NULL
 
@@ -66,13 +66,13 @@ if (is.null(CifFile)) {
     stop(paste("FATAL: model.cif not found for", PdbID))
 }
 
-# ---- 5. Create Results Directory ----
+# Create Results Directory
 ResultsDir <- file.path(getwd(), "results_frustra", PdbID)
 if (!dir.exists(ResultsDir)) dir.create(ResultsDir, recursive = TRUE)
 
 PdbPath <- file.path(ResultsDir, paste0(PdbID, ".pdb"))
 
-# ---- 6. Convert CIF to PDB using gemmi (Python) ----
+# Convert CIF to PDB using gemmi (Python)
 cat("Converting CIF to PDB via gemmi...\n")
 
 py_run_string(paste0("
@@ -98,7 +98,7 @@ if (!file.exists(PdbPath) || file.size(PdbPath) == 0) {
 }
 cat("CIF successfully converted to PDB via gemmi.\n")
 
-# ---- 7. Detect chains from the gemmi-written PDB ----
+# Detect chains from the gemmi-written PDB
 pdb_lines  <- readLines(PdbPath)
 atom_lines <- pdb_lines[grepl("^ATOM|^HETATM", pdb_lines)]
 
@@ -113,7 +113,7 @@ cat("Chains found in gemmi PDB:", paste(chain_ids, collapse = ", "), "\n")
 ChainToUse <- if (length(chain_ids) > 0) chain_ids[1] else "A"
 cat("Using Chain:", ChainToUse, "\n")
 
-# ---- 8. Run Frustration Calculation ----
+# Run Frustration Calculation
 cat("Starting frustration calculation (configurational)...\n")
 res <- tryCatch({
     calculate_frustration(
@@ -146,7 +146,7 @@ res <- tryCatch({
     }
 })
 
-# ---- 9. Export FrustrationData files as CSVs ----
+# Export FrustrationData files as CSVs
 # frustratometeR writes results into:
 #   ResultsDir/<PdbBasename>.done/FrustrationData/
 # Files of interest:
@@ -182,7 +182,7 @@ if (!dir.exists(frustration_data_dir)) {
         cat("WARNING: Per-residue frustration file not found:", residue_file, "\n")
     }
 
-    # -- 5Å density frustration --
+    # -- 5 Å density frustration --
     dens_file <- file.path(frustration_data_dir, paste0(pdb_basename, ".pdb_configurational_5adens"))
     if (file.exists(dens_file)) {
         dens_df <- tryCatch({
