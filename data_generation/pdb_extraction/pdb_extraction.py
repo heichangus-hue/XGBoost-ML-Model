@@ -6,7 +6,7 @@ index_to_pdb = {i + 1: pdb for i, pdb in enumerate(pdb_list)}
 N = len(pdb_list)
 print(f"Total PDB Entries:{N}")
 
-# 20 Picks without replacement (unique indices)
+# 200 Picks without replacement (unique indices)
 random.seed(42)
 unique_picks = random.sample(range(1, N+1),200)
 unique_pdbs = [index_to_pdb[i] for i in unique_picks]
