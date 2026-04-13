@@ -340,7 +340,7 @@ def objective(trial):
         "learning_rate": trial.suggest_float("learning_rate", 1e-2, 0.1, log=True),
         "max_depth": trial.suggest_int("max_depth", 3, 7),
         "n_estimators": trial.suggest_int("n_estimators", 100, 1000, step=100),
-        # FIX: Use "reg_lambda" as the name, and suggest_float is usually better for this
+        # Use "reg_lambda" as the name, and suggest_float is better for this
         "reg_lambda": trial.suggest_float("reg_lambda", 1.0, 5.0),
         "random_state": 42,
         "tree_method": "hist", 
