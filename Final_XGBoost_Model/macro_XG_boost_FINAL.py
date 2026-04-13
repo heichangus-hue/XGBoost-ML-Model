@@ -14,7 +14,6 @@ from matplotlib.ticker import FuncFormatter, MaxNLocator
 from Bio.PDB import MMCIFParser, NeighborSearch
 from Bio.SeqUtils.ProtParam import ProteinAnalysis as IP
 
-# --- 1. CONSTANTS & CONFIGURATION ---
 DATA_DIRS = [
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/scratch/alphafold_job/output_batch_dir_2/1st_batch_all", 
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/2nd_batch_all", 
@@ -33,7 +32,6 @@ AA_MW = {
     'SER': 87.08,  'THR': 101.11, 'TRP': 186.21, 'TYR': 163.18, 'VAL': 99.13
 }
 
-# Ensure your full lists are here
 HEME_pdbs = [
     "1YZP", "1CRI", "4NVA", "4D3T", "3QM8", "2J18", "1VXA", "1PHA", "7RKR", "1DVE",
     "1DS4", "1SOG", "3P6N", "3WEC", "1D3S", "3FKG", "7PQ1", "3P6U", "8EWQ", "4NVN",
@@ -184,7 +182,7 @@ def extract_frustration_data(pdb_code):
         return df['NativeEnergy'].mean(), df['DecoyEnergy'].mean(), f_indices.mean()
     except: return 0.0, 0.0, 0.0
 
-# --- 3. PRE-LOADING (CACHE TO RAM) ---
+# Preloading (CACHE to RAM)
 SEQUENCE_FILE_PATHS = [
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/scratch/alphafold_job/output_batch_dir_2/1st_batch_all/sequences.txt",
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/2nd_batch_all/sequences_2nd_batch.txt",
@@ -290,7 +288,7 @@ if __name__ == "__main__":
         "n_jobs": 1
     }
 
-    # --- LOOCV WITH DETAILED TRACKING ---
+    # LOOCV with detailed tracking
     class_names = ['HEME', 'FAD', 'Zn2+', 'Cu+', 'Cofactorless']
     loo = LeaveOneOut()
     y_true, y_pred, results_list = [], [], []
@@ -327,7 +325,7 @@ if __name__ == "__main__":
     df_results.to_csv("LOOCV_Detailed_Results.csv", index=False)
     prob_cols = ["Prob_HEME", "Prob_FAD", "Prob_Zn2", "Prob_Cu1", "Prob_Cofactorless"]
 
-    # 1. Calculate individual log loss per protein
+    # Calculate individual log loss per protein
     loss_data = []
     for idx, row in df_results.iterrows():
         actual_idx = class_names.index(row['Actual'])
@@ -341,26 +339,25 @@ if __name__ == "__main__":
     
     df_viz = pd.DataFrame(loss_data)
 
-# --- PLOT A: BOXPLOT ---
+# BoxPlot
     plt.figure(figsize=(10, 6))
     sns.boxplot(data=df_viz, x="Class", y="LogLoss", palette="Set2")
     plt.title("Log Loss Distribution: ML Model Uncertainty for Each Class")
     plt.savefig("Boxplot_Uncertainty.png", dpi=500)
     plt.close()
 
-    # --- PLOT B: CONFIDENCE HISTOGRAM (FIXED) ---
+    # Confidence histogram
     plt.figure(figsize=(10, 6))
 
     # Ensure the hue matches your dataframe column name ("Correct")
     ax = sns.histplot(data=df_viz, x="Max_Prob", hue="Correct", 
                   bins=20, multiple="stack", palette={1: "teal", 0: "red"})
 
-    # Explicitly setting the title and labels
+    
     plt.title("Confidence Calibration: Correct vs Incorrect Predictions")
     plt.xlabel("Model Confidence")
     plt.ylabel("Count")
 
-    # Moving and renaming the legend for the dissertation
     # Use 'upper left' to avoid overlapping the high-probability bars on the right
     plt.legend(title='Correctness', loc='upper left', labels=['Correct (1)', 'Incorrect (0)'])
 
@@ -378,7 +375,7 @@ if __name__ == "__main__":
     plt.savefig("LOOCV_confusion_matrix.png", dpi=500)
     plt.close()
 
-    # --- FEATURE IMPORTANCE ---
+    # Feature Importance
     final_weights = compute_sample_weight(class_weight='balanced', y=y)
     final_model = XGBClassifier(**best_params)
     final_model.fit(X, y, sample_weight=final_weights, verbose=False)
