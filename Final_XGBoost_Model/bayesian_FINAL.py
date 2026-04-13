@@ -11,7 +11,6 @@ from sklearn.utils.class_weight import compute_sample_weight
 from Bio.PDB import MMCIFParser, NeighborSearch
 from Bio.SeqUtils.ProtParam import ProteinAnalysis as IP
 
-# --- 1. CONFIGURATION ---
 DATA_DIRS = [
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/scratch/alphafold_job/output_batch_dir_2/1st_batch_all", 
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/2nd_batch_all", 
@@ -30,7 +29,7 @@ AA_MW = {
     'SER': 87.08,  'THR': 101.11, 'TRP': 186.21, 'TYR': 163.18, 'VAL': 99.13
 }
 
-# [PDB Lists - HEME_pdbs, FAD_pdbs, ZN_2_pdbs, CU_1_pdbs, cofactorless_pdbs go here]
+# Lists of PDB
 HEME_pdbs = [
     "1YZP", "1CRI", "4NVA", "4D3T", "3QM8", "2J18", "1VXA", "1PHA", "7RKR", "1DVE",
     "1DS4", "1SOG", "3P6N", "3WEC", "1D3S", "3FKG", "7PQ1", "3P6U", "8EWQ", "4NVN",
@@ -145,8 +144,6 @@ cofactorless_pdbs = [
 
 ALL_PDB_CODES = set([c.upper() for c in (HEME_pdbs + FAD_pdbs + ZN_2_pdbs + CU_1_pdbs + cofactorless_pdbs)])
 
-# --- 2. BIOPHYSICAL HELPERS ---
-
 def assign_label(pdb_code):
     code = pdb_code.upper()
     if code in HEME_pdbs: return 0
@@ -181,7 +178,7 @@ def extract_frustration_data(pdb_code):
         return df['NativeEnergy'].mean(), df['DecoyEnergy'].mean(), f_indices.mean()
     except: return 0.0, 0.0, 0.0
 
-# --- 3. PRE-LOADING (CACHE TO RAM) ---
+# Pre-loading (CACHE TO RAM)
 SEQUENCE_FILE_PATHS = [
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/scratch/alphafold_job/output_batch_dir_2/1st_batch_all/sequences.txt",
     "/mnt/iusers01/fse-ugpgt01/chem02/u28460tc/2nd_batch_all/sequences_2nd_batch.txt",
@@ -228,23 +225,23 @@ def pre_load_structures(data_dirs):
 
             if os.path.exists(cif_path) and os.path.exists(conf_path):
                 try:
-                    # 1. Structural Data
+                    # Structural Data
                     structure = parser.get_structure(folder_name, cif_path)
                     ca_atoms = [a for a in structure.get_atoms() if a.get_name() == "CA"]
                     coords = np.array([a.get_coord() for a in ca_atoms])
                     center = np.mean(coords, axis=0) if len(coords) > 0 else None
                     
-                    # 1. Load Confidence Data ONCE
+                    # Load Confidence Data once
                     with open(conf_path, 'r') as f: 
                         conf_data = json.load(f)
 
-                    # 2. Load Summary Data (Ranking Score) ONCE
+                    # Load Summary Data (Ranking Score) once
                     ranking_score = 0.0
                     if os.path.exists(summary_path):
                         with open(summary_path, 'r') as f_sum: 
                             ranking_score = json.load(f_sum).get("ranking_score", 0.0)
                     
-                    # 2. Charge, Isoelectirc Point and Frustration (Calculated ONCE)
+                    # Charge, Isoelectirc Point and Frustration calculated once
                     charge = extract_global_charge(cif_path)
                     n_avg, d_avg, f_idx = extract_frustration_data(folder_name)
                     sequence = seq_map.get(pdb_code, "")
@@ -263,7 +260,7 @@ def pre_load_structures(data_dirs):
                 except Exception as e: print(f"Error loading {folder_name}: {e}")
     return cache
 
-# --- 4. BAYESIAN OBJECTIVE ---
+# Bayesian Optimisation
 def objective(trial):
     radius = trial.suggest_float("radius", 10.0, 20.0, step=0.5)
     rows = []
@@ -326,7 +323,7 @@ def objective(trial):
         print(f"  {label_name:10} | Best: " + ", ".join([f"{n}({v:.2f})" for n,v in top3.items()])) # Print top 3 features with their correlation values
         print(f"  {'':10} | Worst: " + ", ".join([f"{n}({v:.2f})" for n,v in bot3.items()])) # Print bottom 3 features with their correlation values
 
-    # ML Setup
+    
     y = df_trial['target'].astype(int)
     aa_features = [f"Norm_{aa}" for aa in aa_list] + [f"Weight_{aa}" for aa in aa_list]
     biophys = ['Isoelectric_Point', 'Charge', 'Shannon_Entropy', 'Avg_Native', 'Avg_Decoy', 'Avg_F_index']
@@ -372,7 +369,7 @@ def objective(trial):
         print(f"Error in Trial {trial.number}: {e}")
         return 0.0
 
-# --- 5. EXECUTION ---
+# Execution
 if __name__ == "__main__":
     PROTEIN_CACHE = pre_load_structures(DATA_DIRS)
     if PROTEIN_CACHE:
@@ -409,7 +406,7 @@ if __name__ == "__main__":
     print(f"\n>> Generating Final Master Table using Radius: {best_radius} Å")
     print(f">> Features optimized as 'Useful': {', '.join(best_feature_names)}")
 
-    # --- 2. RE-EXTRACT ALL DATA FOR THE CSV ---
+    # Re-extract all the data in terms of a csv output file
     for code, data in PROTEIN_CACHE.items():
         ns = NeighborSearch(data['ca_atoms'])
         nearby = ns.search(data['center'], best_radius, level='R')
@@ -465,7 +462,7 @@ if __name__ == "__main__":
             
         best_rows.append(row_data)
 
-    # --- 3. SAVE AS PICKLE (preserves float64 precision) ---
+    # Save as pkl file (float64 precision)
     df_best = pd.DataFrame(best_rows)
     df_best['target'] = df_best['PDB_Code'].apply(assign_label)
 
