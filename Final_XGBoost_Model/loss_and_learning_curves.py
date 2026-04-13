@@ -6,7 +6,7 @@ from xgboost import XGBClassifier
 from sklearn.model_selection import learning_curve, train_test_split, StratifiedKFold
 from sklearn.metrics import log_loss
 
-# --- Load Data ---
+# Load Data from pkl file
 with open("best_trial_payload.pkl", "rb") as f:
     payload = pickle.load(f)
 
@@ -15,7 +15,7 @@ X = df[payload["selected_features"]]
 y = df['target'].astype(int)
 params = payload["best_params"]
 
-# Configure the XGBoost parameters
+# Use the same XGBoost hyperparameters
 xgb_config = {
     "objective": "multi:softprob",
     "num_class": 5,
@@ -30,7 +30,7 @@ xgb_config = {
     "n_jobs": 1
 }
 
-# --- Log Loss vs Estimators ---
+# Log Loss vs Estimators
 # We split the data once to watch the loss drop over "time" (iterations)
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
@@ -57,7 +57,7 @@ plt.show()
 
 
 # Stratified K-fold for Log Loss vs Estimators
-# Use 5 or 10 folds to get a smooth, representative curve
+# Use 5 or 10 folds to get a representative curve. In this case, 10 is used.  
 skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
 all_fold_train_loss = []
 all_fold_val_loss = []
@@ -92,7 +92,7 @@ plt.show()
 
 
 
-# --- Learning Curve (Accuracy vs. Data Size) ---
+# Learning Curve (Accuracy vs. Data Size)
 print("Calculating Learning Curve...")
 train_sizes, train_scores, val_scores = learning_curve(
     XGBClassifier(**xgb_config), X, y, 
