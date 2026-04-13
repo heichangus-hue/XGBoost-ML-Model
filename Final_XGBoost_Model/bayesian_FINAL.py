@@ -393,7 +393,7 @@ if __name__ == "__main__":
         print(f"Optimal Radius: {study.best_params['radius']} A")
         study.trials_dataframe().to_csv("bayesian_search_log.csv", index=False)
 
-    # --- 1. PREPARE BEST PARAMETERS ---
+    # Prepare Best Parameters
     best_radius = study.best_params['radius']
     best_rows = []
     aa_list = list(AA_MW.keys())
@@ -412,7 +412,7 @@ if __name__ == "__main__":
         nearby = ns.search(data['center'], best_radius, level='R')
         if not nearby: continue
         
-        # Local Calculations
+        # Normalised and distance-weighted counts
         total_in_sphere = len(nearby)
         counts = {aa: 0 for aa in aa_list}
         weights = {aa: 0.0 for aa in aa_list}
