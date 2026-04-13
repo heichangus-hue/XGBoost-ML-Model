@@ -408,7 +408,7 @@ if __name__ == "__main__":
     df_viz['Predicted'] = df_results['Predicted'].values
 
     print(f"{'Top 5 High Log Loss Proteins for Each Class':^60}")
-    # Sort through each unique class in your class_names list
+    # Sort through each unique class in class_names list
     for protein_class in class_names:
         # Filter for the specific class and sort by LogLoss descending
         class_subset = df_viz[df_viz['Class'] == protein_class].sort_values(by="LogLoss", ascending=False).head(5)
