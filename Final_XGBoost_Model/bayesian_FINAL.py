@@ -358,7 +358,7 @@ def objective(trial):
             y_true.append(y.iloc[test_idx].values[0])
             y_pred.append(model.predict(X.iloc[test_idx])[0])
             
-        # --- FIXED: ACCURACY AND RETURN OUTSIDE THE LOOP ---
+        # Accuracy and F1-Score return outside the loop
         acc = accuracy_score(y_true, y_pred)
         score = f1_score(y_true, y_pred, average='macro')
         trial.set_user_attr("accuracy", acc)
