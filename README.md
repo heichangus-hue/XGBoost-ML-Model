@@ -6,11 +6,30 @@ A comprehensive pipeline developed for my MChem dissertation, which features the
 **Affiliations:** Manchester Institute of Biotechnology & Department of Chemistry at The University of Manchester
 
 Project Structure: 
-1. data_generation - Generation of training dataset and holo-proteins. Training dataset is fed to the XGBoost models for learning. The apo- and holo-proteins are used for data analysis.
-2. data_analysis - Involves the generation of contact and PAE maps for 160 proteins. Used ColabAlign to align apo- and holo-proteins to compute the RMSD and all atom RMSD plots. pLDDT plots were produced for 160 proteins. 80 of the 160 proteins were used to plot the plddt vs RMSD graphs.
-3. frustratometeR_analysis - Data retrieved from running the frustratometeR for the entire training dataset
-4. ML_models_testing_stage - Invovles testing how the guided vs unguided aproach, spherical pocket size and feature additions would affect the model's performance
-5. Final_XGBoost_Model - Contains the training and optimisation of 50 XGBoost models. The best model was reported in the report, and the confusion matrix, feature importance chart, feature-feature correlation matrix, confidence calibration histogram, stratified 10-fold cross-validation loss curve and learning curve were obtained. 
+1. data_generation/
+* PDB code extraction and obtaining their corresponding sequence
+* Generates the training datasets and holo-protein structures.
+  
+2. data_analysis/
+* PAE & Contact Maps: Generated for 200 proteins (apo and holo).
+* Structural alignment between apo- and holo-proteins by ColabAlign. Obtain RMSD and All-atom RMSD plots
+* Obtain pLDDT vs index (i.e. all atom) plots from AlphaFold 3 data
+* A filtered subset of the 80 proteins was used for plotting pLDDT vs RMSD correlation graphs
+
+
+3. frustratometeR_analysis/
+* Contains energetic frustration data retrieved via the frustratometeR package for the entire training dataset
+
+4. ML_models_testing_stage/
+* Guided vs unguided Approach
+* Changes in spherical pocket size
+* Impact of specific feature additions on the model's performance
+
+5. Final_XGBoost_Model/
+* Contains the training and optimisation logs for 50 distinct XGBoost models.
+* The best model (i.e. model with the highest macro-F1 score) is reported.
+* Confusion matrix, feature importance charts, feature-feature correlation matrix, confidence calibration histogram, stratified 10-fold cross-validation loss and learning curves were plotted
+
 
 Final_XGBoost_Model - 
 
