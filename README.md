@@ -5,9 +5,9 @@ A comprehensive pipeline developed for my MChem dissertation, which features the
 
 **Affiliations:** Manchester Institute of Biotechnology & Department of Chemistry at The University of Manchester
 
-Final_XGBoost_Model/
-  Best_Features_Table.csv - 
-  Best_Hyperparameters_Summary.csv - 
+* Final_XGBoost_Model/
+    * Best_Features_Table.csv - 
+    * Best_Hyperparameters_Summary.csv - 
   Boxplot_Uncertainty.png - 
   Confidence Histogram.png
   Feature_Feature_Correlation_Matrix.png - 
