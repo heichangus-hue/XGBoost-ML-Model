@@ -5,10 +5,19 @@ A comprehensive pipeline developed for my MChem dissertation, which features the
 
 **Affiliations:** Manchester Institute of Biotechnology & Department of Chemistry at The University of Manchester
 
-* Final_XGBoost_Model/
+Project Structure: 
+1. data_generation - Generation of training dataset and holo-proteins. Training dataset is fed to the XGBoost models for learning. The apo- and holo-proteins are used for data analysis.
+2. data_analysis - Involves the generation of contact and PAE maps for 160 proteins. Used ColabAlign to align apo- and holo-proteins to compute the RMSD and all atom RMSD plots. pLDDT plots were produced for 160 proteins. 80 of the 160 proteins were used to plot the plddt vs RMSD graphs.
+3. frustratometeR_analysis - Data retrieved from running the frustratometeR for the entire training dataset
+4. ML_models_testing_stage - Invovles testing how the guided vs unguided aproach, spherical pocket size and feature additions would affect the model's performance
+5. Final_XGBoost_Model - Contains the training and optimisation of 50 XGBoost models. The best model was reported in the report, and the confusion matrix, feature importance chart, feature-feature correlation matrix, confidence calibration histogram, stratified 10-fold cross-validation loss curve and learning curve were obtained. 
+
+Final_XGBoost_Model - 
+
+
     * Best_Features_Table.csv - 
-    * Best_Hyperparameters_Summary.csv - 
-  Boxplot_Uncertainty.png - 
+    * Best_Hyperparameters_Summary.csv -
+    * Boxplot_Uncertainty.png - 
   Confidence Histogram.png
   Feature_Feature_Correlation_Matrix.png - 
   LOOCV_Detailed_Results.csv - 
