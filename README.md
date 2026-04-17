@@ -8,7 +8,7 @@ A comprehensive pipeline developed for my MChem dissertation, which features the
 Project Structure: 
 1. data_generation/
 * PDB code extraction and obtaining their corresponding sequence
-* Generates the training datasets and holo-protein structures.
+* Generate the training datasets and holo-protein structures.
   
 2. data_analysis/
 * PAE & Contact Maps: Generated for 200 proteins (apo and holo).
