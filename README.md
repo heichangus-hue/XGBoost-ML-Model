@@ -49,7 +49,7 @@ Final_XGBoost_Model/:
 4. `Best_Features_Table.csv` - Key features used after optimisation in the final model
 5. `Selected_Features_List.txt` - Key list of features used in the final model
 6. `Best_Hyperparameters_Summary.csv` - Final tuning parameters in the final model
-7. `best_trial_payload.pkl` - Stores all the data (features, hyperparameters, etc.) in binary serialisation format. No rounding in data. csv files will round data (up to a 15 digit limit)
+7. `best_trial_payload.pkl` - Stores all the data (features, hyperparameters, etc.) in binary serialisation format. No rounding in data. CSV files will round data (up to a 15 digit limit)
 8. `macro_XG_boost_FINAL.py` - Python script for retraining of the best model. Contains the script for the plots excluding loss and learning curves
 9. `ml_results.out` - Outputs the final classification report and the top 5 high logarithmic loss for each class (scroll to the bottom)
 10. `loss_and_learning_cruves.py` - Python script for plotting loss and learning curves
