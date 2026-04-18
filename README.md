@@ -56,7 +56,7 @@ Final_XGBoost_Model -
   ml_results.out - 
 
 <details>
-<summary><b>Click here to see the full list of 160 files and descriptions</b></summary>
+<summary><b>Click here to see the full list of descriptions</b></summary>
 
 * `Best_Features_Table.csv` - Summary of feature importance.
 * `Best_Hyperparameters_Summary.csv` - Final tuning parameters.
