@@ -1,5 +1,5 @@
 # XGBoost Model for Identifying and Predicting Missing Cofactors in Predicted Protein Structures
-A comprehensive framework developed for my MChem dissertation, which features the scripts for training data generation and analysis. This repository also includes scripts for feature engineering, XGBoost model construct and hyperparameter optimisation. 
+A comprehensive framework developed for my MChem dissertation, which features the scripts for training data generation and analysis. This repository also includes scripts for feature engineering, XGBoost model construction and hyperparameter optimisation. 
 
 **Author:** Angus Chan
 
