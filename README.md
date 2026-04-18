@@ -27,7 +27,7 @@ Project Structure:
 
 5. Final_XGBoost_Model/
 * Contains the training and optimisation logs for 50 distinct XGBoost models.
-* The best model (i.e. model with the highest macro-F1 score) is reported.
+* The best model (i.e. model with the highest macro-F1 score) was reported.
 * Confusion matrix, feature importance charts, feature-feature correlation matrix, confidence calibration histogram, stratified 10-fold cross-validation loss and learning curves were plotted
 
 
