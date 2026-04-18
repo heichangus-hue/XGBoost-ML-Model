@@ -20,7 +20,7 @@ Project Structure:
 * Contains energetic frustration data retrieved via the frustratometeR package for the entire training dataset
 
 4. ML_models_testing_stage/
-* Guided vs unguided Approach
+* Guided vs unguided approach
 * Changes in spherical pocket size
 * Impact of specific feature additions on the model's performance
 
