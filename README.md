@@ -56,10 +56,17 @@ Final_XGBoost_Model -
   ml_results.out - 
 
 <details>
-<summary><b>Click here to see the full list of descriptions</b></summary>
+<summary><b>Click here to see the description of the key files</b></summary>
 
-* `Best_Features_Table.csv` - Summary of feature importance.
-* `Best_Hyperparameters_Summary.csv` - Final tuning parameters.
-* (And so on...)
+Final_XGBoost_Model:
+* `bayesian_FINAL.py` - Python script for the Bayesian optimisation
+* `bayesian_search_log.csv` - Contains a log file of running the optimisations. It reports the macro-F1 (value) and accuracy scores. Tree-structured Parzen Estimator is used to binarily (yes/no) classify all input features in each instance of model training and optimisation. 
+* `bayesian_results.out` - Contains the details of all 50 instances of model training and optimisation. Also identifies the top 3 best and worst features for each model. 
+* `Best_Features_Table.csv` - Key features used after optimisation in the final model
+* `Selected_Features_List.txt` - Key list of features used in the final model
+* `Best_Hyperparameters_Summary.csv` - Final tuning parameters in the final model
+* `macro_XG_boost_FINAL.py` - Python script for retraining of the best model. Contains the script for the plots excluding loss and learning curves 
+* `ml_results.out` - Outputs the final classification report and the top 5 high logarithmic loss for each class (scroll to the bottom)
+* `loss_and_learning_cruves.py` - Python script for plotting loss and learning curves
 
 </details>
