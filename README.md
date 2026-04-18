@@ -5,7 +5,7 @@ A comprehensive framework developed for my MChem dissertation, which features th
 
 **Affiliations:** Manchester Institute of Biotechnology & Department of Chemistry at The University of Manchester
 
-Project Structure: 
+Project Structure Summary: 
 1. data_generation/
 * PDB code extraction and obtaining their corresponding sequence
 * Generate the training datasets and holo-protein structures.
