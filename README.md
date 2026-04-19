@@ -53,6 +53,10 @@ data_analysis/:
 9.  `plddt_vs_index_plots` - Plotted for 400 proteins (200 apo, 200 holo)
 10.  `plddt_vs_rmsd` - Plotted for 80 proteins based on (3)
 
+frustratometeR_analysis/:
+1. `frustratometeR_analysis_for_af3_structures.R` - R script for running frustratometeR on the AlphaFold-obtained structures
+2. `{pdb_code}/{pdb_code}_configurational.csv` - Raw frustration data of each PDB code
+
 Final_XGBoost_Model/:
 1. `bayesian_FINAL.py` - Python script for the Bayesian optimisation
 2. `bayesian_search_log.csv` - Contains a log file of running the optimisations. It reports the macro-F1 (value) and accuracy scores. Tree-structured Parzen Estimator is used to binarily (yes/no) classify all input features in each instance of model training and optimisation
