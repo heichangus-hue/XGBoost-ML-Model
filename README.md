@@ -57,6 +57,9 @@ frustratometeR_analysis/:
 1. `frustratometeR_analysis_for_af3_structures.R` - R script for running frustratometeR on the AlphaFold-obtained structures
 2. `{pdb_code}/{pdb_code}_configurational.csv` - Raw frustration data of each PDB code
 
+ML_models_testing_stage/:
+1. `guided_vs_unguided_approach`,`spherical_pocket_size_testing` and `feature_addition`: Each sub-folder contains its own training dataset, Python execution script, and performance outputs (Feature Importance charts, Confusion Matrices and Detailed Results of the LOOCV approach)
+
 Final_XGBoost_Model/:
 1. `bayesian_FINAL.py` - Python script for the Bayesian optimisation
 2. `bayesian_search_log.csv` - Contains a log file of running the optimisations. It reports the macro-F1 (value) and accuracy scores. Tree-structured Parzen Estimator is used to binarily (yes/no) classify all input features in each instance of model training and optimisation
@@ -68,7 +71,6 @@ Final_XGBoost_Model/:
 8. `macro_XG_boost_FINAL.py` - Python script for retraining of the best model. Contains the script for the plots excluding loss and learning curves
 9. `ml_results.out` - Outputs the final classification report and the top 5 high logarithmic loss for each class (scroll to the bottom)
 10. `loss_and_learning_curves.py` - Python script for plotting loss and learning curves
-
 
 
 </details>
