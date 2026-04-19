@@ -30,7 +30,7 @@ Project Structure Summary:
 * Confusion matrix, feature importance charts, feature-feature correlation matrix, confidence calibration histogram, stratified 10-fold cross-validation loss and learning curves were plotted
 
 <details>
-<summary><b>Click here to see the description of the key files</b></summary>
+<summary><b>Click here to see the detailed description of the key files</b></summary>
 
 data_generation/:
 1.  `pdb_extraction/filtered_pdb_list.txt` - Stores all PDB codes satisfying the filtered parameters
