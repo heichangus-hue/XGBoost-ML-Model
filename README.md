@@ -48,9 +48,10 @@ data_analysis/:
 4.  `colabalign/structural_alignment_data/average_rmsd_summary.csv` - Average RMSD for each PDB code
 5.  `colabalign/structural_alignment_data/maximum_rmsd_summary.csv` - Maximum RMSD for each code
 6.  `structural_alignment_plots/python_scripts_for_processing_and_plotting_rmsd` - Python scripts for plotting the all atom RMSDs
-7.  `structural_alignment_plots/plots_rmsd_distance_overlay_all` - Plots for the all atom RMSD (inclusion of the cofactor coordinates in the plots)
-8.  `plddt_vs_index_plots` - Plotted for 400 proteins (200 apo, 200 holo)
-9.  `plddt_vs_rmsd` - Plotted for 80 proteins based on (3)
+7.  `structural_alignment_plots/plots_rmsd_per_index` - Plots for the all atom RMSD
+8.  `structural_alignment_plots/plots_rmsd_per_index_cofactor_distance_included` - Plots for the all atom RMSD (inclusion of the cofactor coordinates in the plots)
+9.  `plddt_vs_index_plots` - Plotted for 400 proteins (200 apo, 200 holo)
+10.  `plddt_vs_rmsd` - Plotted for 80 proteins based on (3)
 
 Final_XGBoost_Model/:
 1. `bayesian_FINAL.py` - Python script for the Bayesian optimisation
