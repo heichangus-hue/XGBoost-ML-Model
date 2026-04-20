@@ -58,7 +58,7 @@ frustratometeR_analysis/:
 2. `{pdb_code}/{pdb_code}_configurational.csv` - Raw frustration data of each PDB code
 
 ML_models_testing_stage/:
-1. `guided_vs_unguided_approach`,`spherical_pocket_size_testing` and `feature_addition`: Each sub-folder contains its own training dataset, Python execution script, and performance outputs (Feature Importance charts, Confusion Matrices and Detailed Results of the LOOCV approach)
+1. `guided_vs_unguided_approach`,`spherical_pocket_size_testing` and `feature_addition`: Each sub-folder contains its own training dataset, Python execution script, and performance outputs (feature importance charts, confusion matrices and detailed results of the LOOCV approach)
 
 Final_XGBoost_Model/:
 1. `bayesian_FINAL.py` - Python script for the Bayesian optimisation
