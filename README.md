@@ -55,21 +55,21 @@ data_analysis/:
 
 frustratometeR_analysis/:
 1. `frustratometeR_analysis_for_af3_structures.R` - R script for running frustratometeR on the AlphaFold-obtained structures
-2. `{pdb_code}/{pdb_code}_configurational.csv` - Raw frustration data of each PDB code
+2. `{pdb_code}/{pdb_code}_configurational.csv` - Raw energetic frustration data of each PDB code
 
 ML_models_testing_stage/:
-1. `guided_vs_unguided_approach`,`spherical_pocket_size_testing` and `feature_addition`: Each sub-folder contains its own training dataset, Python execution script, and performance outputs (feature importance charts, confusion matrices and detailed results of the LOOCV approach)
+1. `guided_vs_unguided_approach`,`spherical_pocket_size_testing` and `feature_addition`: Each sub-folder contains independent training sets, execution scripts, and evaluation metrics (feature importance charts, confusion matrices and LOOCV results).
 
 Final_XGBoost_Model/:
 1. `bayesian_FINAL.py` - Python script for the Bayesian optimisation
 2. `bayesian_search_log.csv` - Contains a log file of running the optimisations. It reports the macro-F1 (value) and accuracy scores. Tree-structured Parzen Estimator is used to binarily (yes/no) classify all input features in each instance of model training and optimisation
 3. `bayesian_results.out` - Contains the details of all 50 instances of model training and optimisation. Also identifies the top 3 best and worst features for each model
-4. `Best_Features_Table.csv` - Key features used after optimisation in the final model
-5. `Selected_Features_List.txt` - Key list of features in final model
-6. `Best_Hyperparameters_Summary.csv` - Final tuning parameters in the final model
+4. `Best_Features_Table.csv` - Feature matrix used for final model
+5. `Selected_Features_List.txt` - Key list of features for final model
+6. `Best_Hyperparameters_Summary.csv` - List of hyperparameters used for final model
 7. `best_trial_payload.pkl` - Stores all the data (features, hyperparameters, etc.) in binary serialisation format. No rounding in data. CSV files will round data (up to a 15 digit limit)
 8. `macro_XG_boost_FINAL.py` - Python script for retraining of the best model. Contains the script for the plots excluding loss and learning curves
-9. `ml_results.out` - Outputs the final classification report and the top 5 high logarithmic loss for each class (scroll to the bottom)
+9. `ml_results.out` - Outputs the final classification report and the log loss analysis (Lists top 5 proteins with a high logarithmic loss for each class)
 10. `loss_and_learning_curves.py` - Python script for plotting loss and learning curves
 
 
