@@ -1,4 +1,4 @@
-# XGBoost Model for Identifying and Predicting Missing Cofactors in Predicted Protein Structures
+# An XGBoost Model for Identifying and Predicting Missing Cofactors in Predicted Protein Structures
 A comprehensive framework developed for my MChem dissertation, which features the scripts for training data generation and analysis. This repository also includes scripts for feature engineering, XGBoost model construction and hyperparameter optimisation. 
 
 **Author:** Angus Chan
@@ -30,7 +30,7 @@ Project Structure Summary:
 * Confusion matrix, feature importance charts, feature-feature correlation matrix, confidence calibration histogram, stratified 10-fold cross-validation loss and learning curves were plotted
 
 <details>
-<summary><b>Click here to see the description of the key files</b></summary>
+<summary><b>Click here to see the detailed description of the key files</b></summary>
 
 data_generation/:
 1.  `pdb_extraction/filtered_pdb_list.txt` - Stores all PDB codes satisfying the filtered parameters
@@ -48,22 +48,29 @@ data_analysis/:
 4.  `colabalign/structural_alignment_data/average_rmsd_summary.csv` - Average RMSD for each PDB code
 5.  `colabalign/structural_alignment_data/maximum_rmsd_summary.csv` - Maximum RMSD for each code
 6.  `structural_alignment_plots/python_scripts_for_processing_and_plotting_rmsd` - Python scripts for plotting the all atom RMSDs
-7.  `structural_alignment_plots/plots_rmsd_distance_overlay_all` - Plots for the all atom RMSD (inclusion of the cofactor coordinates in the plots)
-8.  `plddt_vs_index_plots` - Plotted for 400 proteins (200 apo, 200 holo)
-9.  `plddt_vs_rmsd` - Plotted for 80 proteins based on (3)
+7.  `structural_alignment_plots/plots_rmsd_per_index` - Plots for the all atom RMSD
+8.  `structural_alignment_plots/plots_rmsd_per_index_cofactor_distance_included` - Plots for the all atom RMSD (inclusion of the cofactor coordinates in the plots)
+9.  `plddt_vs_index_plots` - Plotted for 400 proteins (200 apo, 200 holo)
+10.  `plddt_vs_rmsd` - Plotted for 80 proteins based on (3)
+
+frustratometeR_analysis/:
+1. `frustratometeR_analysis_for_af3_structures.R` - R script for running frustratometeR on the AlphaFold-obtained structures
+2. `{pdb_code}/{pdb_code}_configurational.csv` - Raw energetic frustration data of each PDB code
+
+ML_models_testing_stage/:
+1. `guided_vs_unguided_approach`,`spherical_pocket_size_testing` and `feature_addition`: Each sub-folder contains independent training sets, execution scripts, and evaluation metrics (feature importance charts, confusion matrices and LOOCV results).
 
 Final_XGBoost_Model/:
 1. `bayesian_FINAL.py` - Python script for the Bayesian optimisation
 2. `bayesian_search_log.csv` - Contains a log file of running the optimisations. It reports the macro-F1 (value) and accuracy scores. Tree-structured Parzen Estimator is used to binarily (yes/no) classify all input features in each instance of model training and optimisation
 3. `bayesian_results.out` - Contains the details of all 50 instances of model training and optimisation. Also identifies the top 3 best and worst features for each model
-4. `Best_Features_Table.csv` - Key features used after optimisation in the final model
-5. `Selected_Features_List.txt` - Key list of features in final model
-6. `Best_Hyperparameters_Summary.csv` - Final tuning parameters in the final model
+4. `Best_Features_Table.csv` - Feature matrix used for final model
+5. `Selected_Features_List.txt` - Key list of features for final model
+6. `Best_Hyperparameters_Summary.csv` - List of hyperparameters used for final model
 7. `best_trial_payload.pkl` - Stores all the data (features, hyperparameters, etc.) in binary serialisation format. No rounding in data. CSV files will round data (up to a 15 digit limit)
 8. `macro_XG_boost_FINAL.py` - Python script for retraining of the best model. Contains the script for the plots excluding loss and learning curves
-9. `ml_results.out` - Outputs the final classification report and the top 5 high logarithmic loss for each class (scroll to the bottom)
+9. `ml_results.out` - Outputs the final classification report and the log loss analysis (Lists top 5 proteins with a high logarithmic loss for each class)
 10. `loss_and_learning_curves.py` - Python script for plotting loss and learning curves
-
 
 
 </details>
