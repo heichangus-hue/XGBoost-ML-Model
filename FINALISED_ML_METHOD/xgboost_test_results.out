@@ -1,0 +1,31 @@
+Loading the best model
+
+Hyperparameters used:
+Pocket Radius: 16.0 Å
+Learning Rate: 0.0483827811040944
+Max Depth: 6
+Estimators: 1000
+Reg Lambda:1.8680112148246761
+
+Successfully loaded sequences from: sequences_cofactorless_testing.txt
+Successfully loaded sequences from: sequences_cu_testing.txt
+Successfully loaded sequences from: sequences_fad_testing.txt
+Successfully loaded sequences from: sequences_heme_testing.txt
+Successfully loaded sequences from: sequences_zn_testing.txt
+Total unique sequences in master map: 152
+Scanning /mnt/iusers01/fse-ugpgt01/chem02/u28460tc/scratch/alphafold_test_set/output_batch_dir_2/test_set: Found 152 matching proteins.
+Extract the 16.0 Å Pocket Features for the Test Set
+
+Classification Report for Test Set (Radius: 16.0 Å):
+              precision    recall  f1-score   support
+
+        HEME       0.77      0.86      0.81        35
+         FAD       0.96      0.77      0.86        35
+        Zn2+       0.69      0.77      0.73        35
+         Cu+       0.86      0.50      0.63        12
+Cofactorless       0.64      0.71      0.68        35
+
+    accuracy                           0.76       152
+   macro avg       0.78      0.72      0.74       152
+weighted avg       0.77      0.76      0.76       152
+
