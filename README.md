@@ -29,6 +29,14 @@ Project Structure Summary:
 * The best model (i.e. model with the highest macro-F1 score) was reported.
 * Confusion matrix, feature importance charts, feature-feature correlation matrix, confidence calibration histogram, stratified 10-fold cross-validation loss and learning curves were plotted
 
+6. FINALISED_ML_METHOD/
+* Implements a refined feature extraction pipeline compared to Final_XGBoost_Model/
+* Contains the training and optimisation logs for 50 distinct XGBoost models 
+* The best model (i.e. model with the highest macro-F1 score) was reported
+* Confusion matrix, feature importance charts, feature-feature correlation matrix, confidence calibration histogram, stratified 10-fold cross-validation loss and learning curves were plotted
+* Using the same features, spherical pocket radius and hyperparameters from the best model, a newer model with no LOOCV was trained and tested
+* Newer model demonstrates strong generalisation performance on previously unseen datasets
+
 <details>
 <summary><b>Click here to see the detailed description of the key files</b></summary>
 
